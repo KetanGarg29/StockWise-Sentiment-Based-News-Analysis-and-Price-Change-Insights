@@ -57,6 +57,7 @@ This project enables users to:
 git clone https://github.com/your-username/stocks-sentiment-analyzer.git
 cd stocks-sentiment-analyzer
 
+ - NEWS_API_KEY = "your_actual_api_key_here"
+ - python3 app.py
 
-```bash
-NEWS_API_KEY = "your_actual_api_key_here"
+
