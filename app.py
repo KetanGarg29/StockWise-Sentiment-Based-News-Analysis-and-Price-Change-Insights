@@ -10,7 +10,7 @@ from transformers import pipeline
 app = Flask(__name__)
 app.secret_key = 'very-secret-key'  # Required for session management
 
-NEWS_API_KEY = "8292f5eb25144909976a43651d9e49c0"
+NEWS_API_KEY = "Your Api Key"
 sentiment_pipe = pipeline("text-classification", model="ProsusAI/finbert")
 
 
