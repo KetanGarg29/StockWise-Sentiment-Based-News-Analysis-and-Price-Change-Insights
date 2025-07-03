@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Your Dashboard</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <style>
+    #filterSection {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      justify-content: center;
+      margin: 1rem 0 2rem;
+    }
+
+    select {
+      padding: 0.5rem;
+      font-size: 1rem;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+    }
+  </style>
+</head>
+<body>
+  <h2>📊 {{ session.username }}'s Dashboard</h2>
+  <p><a href="{{ url_for('index') }}">⬅ Back to Home</a> | <a href="{{ url_for('logout') }}">Logout</a></p>
+
+  <!-- 🔽 Filter Dropdown -->
+  <div id="filterSection">
+    <label for="stockSelect"><strong>Filter by Stock:</strong></label>
+    <select id="stockSelect">
+      <option value="all">All</option>
+      {% for stock in dashboard_data %}
+        <option value="{{ stock.company }}">{{ stock.company }}</option>
+      {% endfor %}
+    </select>
+  </div>
+
+  <!-- 📰 News Cards -->
+  <div id="newsContainer">
+    {% for stock in dashboard_data %}
+      <div class="stock-group" data-company="{{ stock.company }}">
+        <h3>{{ stock.company }}</h3>
+        {% for article in stock.news %}
+          <div class="card">
+            <h4>{{ article.title }}</h4>
+            <p><strong>Date:</strong> {{ article.publishedAt }}</p>
+            <p><strong>Source:</strong> {{ article.source }}</p>
+            <p><strong>Change:</strong> {{ article.stock_change }} |
+               <strong>Sentiment:</strong> {{ article.sentiment }}</p>
+            <p>{{ article.description }}</p>
+            <a href="{{ article.url }}" target="_blank">Read more</a>
+          </div>
+        {% endfor %}
+      </div>
+    {% endfor %}
+  </div>
+
+  <script>
+    const dropdown = document.getElementById('stockSelect');
+    const stockGroups = document.querySelectorAll('.stock-group');
+
+    dropdown.addEventListener('change', () => {
+      const selected = dropdown.value;
+      stockGroups.forEach(group => {
+        if (selected === 'all' || group.dataset.company === selected) {
+          group.style.display = 'block';
+        } else {
+          group.style.display = 'none';
+        }
+      });
+    });
+  </script>
+</body>
+</html>

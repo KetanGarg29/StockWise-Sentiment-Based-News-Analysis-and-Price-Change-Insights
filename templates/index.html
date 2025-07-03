@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Stock News Impact</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body>
+  <h1>📈 StockWise : StockWise: Sentiment-Based News Analysis and Price Change Insights </h1>
+
+  <!-- 🔐 User info and navigation -->
+  {% if session.username %}
+    <p>Welcome, <strong>{{ session.username }}</strong>! 
+      <a href="{{ url_for('dashboard') }}">[My Dashboard]</a> |
+      <a href="{{ url_for('logout') }}">Logout</a>
+    </p>
+  {% else %}
+    <p><a href="{{ url_for('login') }}">Login</a> to save stocks and access your dashboard.</p>
+  {% endif %}
+
+  <!-- 🔎 Search form -->
+  <form method="POST">
+    <input id="inp" type="text" name="company" placeholder="Enter Company Name" value="{{ company }}" required>
+    <input type="submit" value="Fetch News" class="submit-btn">
+  </form>
+
+  <!-- 🎯 Chart data script -->
+  <script id="chart-data" type="application/json">
+    {{ news | tojson }}
+  </script>
+
+  <!-- ➕ Add to dashboard button -->
+  {% if news and session.username %}
+    <form method="POST" action="{{ url_for('add_to_dashboard') }}">
+      <button type="submit" class="submit-btn">
+        ➕ Add “{{ company }}” to Dashboard
+      </button>
+    </form>
+  {% endif %}
+
+  <!-- 📊 Chart pop-up -->
+  {% if news %}
+    <button id="showGraphBtn" class="submit-btn">Show Stock‑Change Graph</button>
+    <div id="graphPopup" class="popup">
+      <div class="popup-content">
+        <span id="closePopup">&times;</span>
+        <canvas id="stockChart" width="600" height="400"></canvas>
+      </div>
+    </div>
+  {% endif %}
+
+  <!-- 📰 News Cards -->
+  {% if news %}
+    {% for article in news %}
+      <div class="card">
+        <h3>{{ article.title }}</h3>
+        <p><strong>Date:</strong> {{ article.publishedAt }}</p>
+        <p><strong>Source:</strong> {{ article.source }}</p>
+
+        <p><strong>Stock Change:</strong>
+          <span class="{% if article.stock_change.startswith('+') %}stock-increase
+                       {% elif article.stock_change.startswith('-') %}stock-decrease
+                       {% else %}stock-neutral{% endif %}">
+            {{ article.stock_change }}
+          </span>
+        </p>
+
+        <p><strong>Sentiment:</strong>
+          <span class="{% if article.sentiment == 'Positive' %}stock-increase
+                       {% elif article.sentiment == 'Negative' %}stock-decrease
+                       {% else %}stock-neutral{% endif %}">
+            {{ article.sentiment }}
+          </span>
+        </p>
+
+        <p>{{ article.description }}</p>
+        <a href="{{ article.url }}" target="_blank">Read more</a>
+      </div>
+    {% endfor %}
+  {% elif company %}
+    <p>No recent news found for “{{ company }}”.</p>
+  {% endif %}
+
+  <script src="{{ url_for('static', filename='search.js') }}"></script>
+</body>
+</html>
