@@ -1,0 +1,16 @@
+{
+  "users": {
+    "default_user": [
+      "Adani Enterprises",
+      "Infosys",
+      "ICICI Bank"
+    ],
+    "Ketan": [
+      "Adani Enterprises"
+    ],
+    "Keshav": [
+      "ICICI Bank",
+      "Tech Mahindra"
+    ]
+  }
+}
